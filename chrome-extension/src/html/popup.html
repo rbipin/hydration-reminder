@@ -1,0 +1,28 @@
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" href="../css/angular-material.min.css">
+    <script src="../js/angular.min.js"></script>
+    <script src="../js/angular-animate.min.js"></script>
+    <script src="../js/angular-aria.min.js"></script>
+    <script src="../js/angular-material.min.js"></script>
+    <script src="../js/popup.js"></script>
+
+</head>
+
+<body ng-app="popUpApp">
+    <div id="sliderContainer" ng-controller="sliderContainer" ng-cloak layout="row" style="display: flex; width: 180px;">
+        <md-content style="padding:10px; margin-left: 10px;">
+            <h3>Reminder Interval</h3>
+            <span>{{value}} minutes</span>
+            <div layout>
+                <md-slider flex md-discrete ng-model="value" step="15" 
+                min="0" max="60" aria-label="default" ng-change="OnChange()">
+                </md-slider>
+            </div>
+        </md-content>
+    </div>
+
+</body>
+
+</html>
