@@ -105,3 +105,4 @@ dist
 
 #signing keys
 *.pem
+*.crx
