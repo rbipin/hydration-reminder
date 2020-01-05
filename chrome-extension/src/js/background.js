@@ -2,6 +2,7 @@
 let alertInvervalTime = 0;
 let alertTriggered = false;
 let intervalId;
+let alertScheduleDays=[];
 
 //chrome message listener
 chrome.runtime.onMessage.addListener(
@@ -11,6 +12,10 @@ chrome.runtime.onMessage.addListener(
                 var intervalInMilliseconds = ConvertMinutesToMilliseconds(request.interval)
                 OnIntervalChange(intervalInMilliseconds)
                 break;
+            case "ScheduleChange":
+                loadSavedSchedule();
+                StartAlert();
+                break;    
         }
     });
 
@@ -32,6 +37,7 @@ function ResetAlertTrigger(){
 }
 
 GetSavedInterval();
+loadSavedSchedule();
 StartAlert();
 
 //Get the interval time if it is already saved in chrome
@@ -45,6 +51,14 @@ function GetSavedInterval() {
         alertInvervalTime = result.hydration_reminder_alarm;
     });
 }
+
+function loadSavedSchedule(){
+    chrome.storage.sync.get(['hydration_schedule'], function (result) {
+        //console.log('Saved water Reminder Interval ' + result.hydration_reminder_alarm); //For Debugging
+        alertScheduleDays = result.hydration_schedule;
+    });
+}
+
 
 //On Invterval change, Clear the interval, update the value and start the alerting process
 function OnIntervalChange(interval) {
@@ -72,7 +86,7 @@ function UpdateInterval(newInterval) {
 
 //Start a timer to trigger notification to drink water for that time
 function StartAlert() {
-    if (alertInvervalTime == 0 || alertInvervalTime == undefined) {
+    if (alertInvervalTime == 0 || alertInvervalTime == undefined || IsScheduledDay()==false) {
         //console.log("Reminder is not running"); //For Debugging
         return;
     }
@@ -85,6 +99,20 @@ function StartAlert() {
         }
     }, alertInvervalTime);
 };
+
+//
+function IsScheduledDay(){   
+    if (alertScheduleDays==null || alertScheduleDays==undefined || alertScheduleDays.length==0){
+        return true;
+    }   
+    let current_date = new Date()
+    let dayOfWeek=current_date.getDay()+1;
+    if (alertScheduleDays.includes(dayOfWeek)){
+        return true;
+    }
+    ClearInterval();   
+    return false;
+}
 
 //Create the alert message from chrome notification to drink water.
 function CreateAlert() {

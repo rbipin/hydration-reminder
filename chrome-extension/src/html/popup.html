@@ -2,27 +2,65 @@
 
 <head>
     <link rel="stylesheet" href="../css/angular-material.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic">
+
+</head>
+
+<body ng-app="popUpApp">
+    <div style="width: 300px; height: 495px; overflow-y: hidden;">
+        <md-card>
+            <md-card-content>
+                <span class="md-headline">Schedule</span>
+                <section>
+                    <p class="md-title">Interval</p>
+                    <div id="sliderContainer" ng-controller="sliderContainer" ng-cloak>
+                        <span class="md-subhead">{{value}} minutes</span>
+                        <md-slider flex md-discrete ng-model="value" step="15" min="0" max="60" aria-label="default"
+                            ng-change="OnChange()">
+                        </md-slider>
+                    </div>
+                </section>
+                <section>
+                    <p class="md-title">Days</p>
+                    <div ng-controller="DaysSwitchCtrl" ng-cloak style="display: flex;">
+                        <div>
+                            <md-switch ng-model="data.cb1" aria-label="Sunday" ng-change="onChange(data.cb1,1)">
+                                <span class="md-body-2">Sunday</span>
+                            </md-switch>
+                            <md-switch ng-model="data.cb2" aria-label="Monday" ng-change="onChange(data.cb2,2)">
+                                <span class="md-body-2">Monday</span>
+                            </md-switch>
+                            <md-switch ng-model="data.cb4" aria-label="Wednesday" ng-change="onChange(data.cb4,4)">
+                                <span class="md-body-2">Wednesday</span>
+                            </md-switch>
+                        </div>
+                        <div>
+                            <md-switch ng-model="data.cb7" aria-label="Saturday" ng-change="onChange(data.cb7,7)">
+                                <span class="md-body-2">Saturday</span>
+                            </md-switch>
+                            <md-switch ng-model="data.cb3" aria-label="Tuesday" ng-change="onChange(data.cb3,3)">
+                                <span class="md-body-2">Tuesday</span>
+                            </md-switch>
+                            
+                            <md-switch ng-model="data.cb5" aria-label="Thursday" ng-change="onChange(data.cb5,5)">
+                                <span class="md-body-2">Thursday</span>
+                            </md-switch>
+                            <md-switch ng-model="data.cb6" aria-label="Friday" ng-change="onChange(data.cb6,6)">
+                                <span class="md-body-2">Friday</span>
+                            </md-switch>
+                            
+                        </div>
+
+                    </div> 
+                </section>
+            </md-card-content>
+        </md-card>
+    </div>
     <script src="../js/angular.min.js"></script>
     <script src="../js/angular-animate.min.js"></script>
     <script src="../js/angular-aria.min.js"></script>
     <script src="../js/angular-material.min.js"></script>
     <script src="../js/popup.js"></script>
-
-</head>
-
-<body ng-app="popUpApp">
-    <div id="sliderContainer" ng-controller="sliderContainer" ng-cloak layout="row" style="display: flex; width: 180px;">
-        <md-content style="padding:10px; margin-left: 10px;">
-            <h3>Reminder Interval</h3>
-            <span>{{value}} minutes</span>
-            <div layout>
-                <md-slider flex md-discrete ng-model="value" step="15" 
-                min="0" max="60" aria-label="default" ng-change="OnChange()">
-                </md-slider>
-            </div>
-        </md-content>
-    </div>
-
 </body>
 
 </html>
