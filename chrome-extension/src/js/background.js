@@ -86,8 +86,10 @@ function UpdateInterval(newInterval) {
 
 //Start a timer to trigger notification to drink water for that time
 function StartAlert() {
-    if (alertInvervalTime == 0 || alertInvervalTime == undefined || IsScheduledDay()==false) {
+        
+    if (alertInvervalTime == 0 || alertInvervalTime == undefined || !IsScheduledDay() ) {
         //console.log("Reminder is not running"); //For Debugging
+        clearInterval();
         return;
     }
     intervalId = window.setInterval(() => {
@@ -100,17 +102,16 @@ function StartAlert() {
     }, alertInvervalTime);
 };
 
-//
+//Check if the day is scheduled
 function IsScheduledDay(){   
     if (alertScheduleDays==null || alertScheduleDays==undefined || alertScheduleDays.length==0){
-        return true;
+        return false;
     }   
     let current_date = new Date()
     let dayOfWeek=current_date.getDay()+1;
     if (alertScheduleDays.includes(dayOfWeek)){
         return true;
-    }
-    ClearInterval();   
+    }  
     return false;
 }
 
