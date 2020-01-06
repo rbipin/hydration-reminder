@@ -4,10 +4,12 @@
     <link rel="stylesheet" href="../css/angular-material.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic">
 </head>
+
 <body ng-app="popUpApp">
     <div style="width: 285px; height: 490px; overflow-y: hidden;">
-        <md-toolbar class="md-accent">
+        <md-toolbar>
             <div class="md-toolbar-tools">
+                <img style="padding-right: 10px;" src="../../assets/icons/bottle-32.png" />
                 <h3>
                     <span>Hydration Reminder</span>
                 </h3>
@@ -18,9 +20,9 @@
                 <section>
                     <div id="sliderContainer" ng-controller="sliderContainer" ng-cloak>
                         <md-toolbar class="md-theme-light">
-                            <h3 class="md-toolbar-tools">
+                            <h4 class="md-toolbar-tools">
                                 <span>Interval {{value}} minutes</span>
-                            </h3>
+                            </h4>
                         </md-toolbar>
                         <div style="margin-top: 20px;">
                             <md-slider flex md-discrete ng-model="value" step="15" min="0" max="60" aria-label="default"
@@ -33,9 +35,9 @@
                 <section>
                     <md-divider></md-divider>
                     <md-toolbar class="md-theme-light">
-                        <h3 class="md-toolbar-tools">
+                        <h4 class="md-toolbar-tools">
                             <span>Schedule Days</span>
-                        </h3>
+                        </h4>
                     </md-toolbar>
                     <div ng-controller="DaysSwitchCtrl" ng-cloak style="display: flex;">
                         <div>
