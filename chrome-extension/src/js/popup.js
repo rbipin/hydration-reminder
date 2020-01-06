@@ -9,7 +9,7 @@ function getSavedValue(keyname) {
     });
 }
 // Convert Millisenconds to minutes
-function ConvertMilliSecondsToMinutes(intervalInMilliseconds) {
+function convertMilliSecondsToMinutes(intervalInMilliseconds) {
     //console.log('Millisecond To Minute Converstion, Millisecond input '+ intervalInMilliseconds); //For Debugging
     if (intervalInMilliseconds == 0 || intervalInMilliseconds == undefined) {
         return 0;
@@ -28,17 +28,16 @@ angular.module('popUpApp', ['ngMaterial'])
 
         $scope.savedValue = function () {
             chrome.storage.sync.get(['hydration_reminder_alarm'], function (result) {
-                $scope.value = ConvertMilliSecondsToMinutes(result.hydration_reminder_alarm);
+                $scope.value = convertMilliSecondsToMinutes(result.hydration_reminder_alarm);
                 //console.log('Saved water Reminder Interval ' + $scope.value); //For Debugging
                 $scope.$apply();
             });
         };
 
+        //On Slider Change, update the interval
         $scope.OnChange = () => {
-            chrome.runtime.sendMessage({
-                command: "IntervalChange",
-                interval: $scope.value
-            });
+            let alertInterval=convertMinutesToMilliseconds($scope.value)
+            updateInterval(alertInterval);
         };
 
         $scope.savedValue();
@@ -73,6 +72,28 @@ angular.module('popUpApp', ['ngMaterial'])
         $scope.setSavedValue();
     });
 
+//Update the interval in chrome storage
+function updateInterval(newInterval) {
+    chrome.storage.sync.set({
+        'hydration_reminder_alarm': newInterval
+    }, function () {
+        //console.log('Reminder Interval set to ' + newInterval); //For Debugging
+    });
+    //Send the message of the update
+    chrome.runtime.sendMessage({
+        command: "IntervalChange",
+        interval: newInterval
+    });
+};
+
+// Convert Minutes to milliseconds
+function convertMinutesToMilliseconds(intervalInMinutes) {
+    if (intervalInMinutes == 0 || intervalInMinutes == undefined) {
+        return 0;
+    }
+    return (intervalInMinutes * 60 * 1000);
+};
+
 //Update the schedule
 function updateSchedule(state, day) {
     //console.log('Scheduled Days: ' + scheduledDays); //for debugging
@@ -97,6 +118,7 @@ function updateSchedule(state, day) {
     });
     //Send the change
     chrome.runtime.sendMessage({
-        command: "ScheduleChange"
+        command: "ScheduleChange",
+        alertScheduleDays: scheduledDays
     });
 };

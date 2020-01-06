@@ -4,17 +4,21 @@ let alertTriggered = false;
 let intervalId;
 let alertScheduleDays=[];
 
+getSavedInterval();
+loadSavedSchedule();
+startAlert();
+
 //chrome message listener
 chrome.runtime.onMessage.addListener(
     (request, sender, sendResponse) => {
         switch (request.command) {
             case "IntervalChange":
-                var intervalInMilliseconds = ConvertMinutesToMilliseconds(request.interval)
-                OnIntervalChange(intervalInMilliseconds)
+                alertInvervalTime = request.interval;
+                onIntervalChange(alertInvervalTime);
                 break;
             case "ScheduleChange":
-                loadSavedSchedule();
-                StartAlert();
+                alertScheduleDays=request.alertScheduleDays;
+                startAlert();
                 break;    
         }
     });
@@ -22,26 +26,22 @@ chrome.runtime.onMessage.addListener(
 //When chrome notification is closed, reset triggered variable to false.
 chrome.notifications.onClosed.addListener(function(notificationID, byUser) {
     //console.log('chrome notification closed'); //For Debugging
-    ResetAlertTrigger();
+    resetAlertTrigger();
 });
 
 //When chrome notification is clicked, reset the triggered variable to false.
 chrome.notifications.onClicked.addListener(function (notificationID){
     //console.log('chrome notification closed'); //For Debugging
-    ResetAlertTrigger();
+    resetAlertTrigger();
 });
 
 //Reset the alert triggered
-function ResetAlertTrigger(){
+function resetAlertTrigger(){
     alertTriggered = false;
 }
 
-GetSavedInterval();
-loadSavedSchedule();
-StartAlert();
-
-//Get the interval time if it is already saved in chrome
-function GetSavedInterval() {
+//Get the interval time if it is already saved in chrome storage sync
+function getSavedInterval() {
     chrome.storage.sync.get(['hydration_reminder_alarm'], function (result) {
         //console.log('Saved water Reminder Interval ' + result.hydration_reminder_alarm); //For Debugging
         if (result.hydration_reminder_alarm == undefined) {
@@ -52,6 +52,7 @@ function GetSavedInterval() {
     });
 }
 
+//load the saved Schedule from chrome storage sync
 function loadSavedSchedule(){
     chrome.storage.sync.get(['hydration_schedule'], function (result) {
         //console.log('Saved water Reminder Interval ' + result.hydration_reminder_alarm); //For Debugging
@@ -61,49 +62,38 @@ function loadSavedSchedule(){
 
 
 //On Invterval change, Clear the interval, update the value and start the alerting process
-function OnIntervalChange(interval) {
-    ClearInterval();
-    UpdateInterval(interval);
-    StartAlert();
+function onIntervalChange(interval) {
+    clearAlertInterval();
+    startAlert();
 };
 
 //Clear the set Interval timer
-function ClearInterval() {
+function clearAlertInterval() {
     if (intervalId != undefined) {
         clearInterval(intervalId);
     }
 };
 
-//Update the interval in chrome storage
-function UpdateInterval(newInterval) {
-    alertInvervalTime = newInterval;
-    chrome.storage.sync.set({
-        'hydration_reminder_alarm': alertInvervalTime
-    }, function () {
-        //console.log('Reminder Interval set to ' + newInterval); //For Debugging
-    });
-};
-
 //Start a timer to trigger notification to drink water for that time
-function StartAlert() {
+function startAlert() {
         
-    if (alertInvervalTime == 0 || alertInvervalTime == undefined || !IsScheduledDay() ) {
+    if (alertInvervalTime == 0 || alertInvervalTime == undefined || !isScheduledDay() ) {
         //console.log("Reminder is not running"); //For Debugging
-        clearInterval();
+        clearAlertInterval();
         return;
     }
     intervalId = window.setInterval(() => {
         if (alertTriggered == false) {
-            //var d = new Date(); //For Debugging
-            //console.log('triggering alert ' + d.toTimeString()); //For Debugging
-            CreateAlert();
+            var d = new Date(); //For Debugging
+            console.log('triggering alert ' + d.toTimeString()); //For Debugging
+            triggerAlert();
             alertTriggered = true;
         }
     }, alertInvervalTime);
 };
 
 //Check if the day is scheduled
-function IsScheduledDay(){   
+function isScheduledDay(){   
     if (alertScheduleDays==null || alertScheduleDays==undefined || alertScheduleDays.length==0){
         return false;
     }   
@@ -116,7 +106,7 @@ function IsScheduledDay(){
 }
 
 //Create the alert message from chrome notification to drink water.
-function CreateAlert() {
+function triggerAlert() {
     var notificationOptions = {
         type: "basic",
         title: "Hydration Reminder",
@@ -125,9 +115,4 @@ function CreateAlert() {
 
     };
     chrome.notifications.create(notificationOptions);
-};
-
-// Convert Minutes to milliseconds
-function ConvertMinutesToMilliseconds(intervalInMinutes) {
-    return (intervalInMinutes * 60 * 1000);
 };

@@ -7,21 +7,38 @@
 </head>
 
 <body ng-app="popUpApp">
-    <div style="width: 320px; height: 495px; overflow-y: hidden;">
+    <div style="width: 285px; height: 490px; overflow-y: hidden;">
+        <md-toolbar class="md-accent">
+            <div class="md-toolbar-tools">
+                <h3>
+                    <span>Hydration Reminder</span>
+                </h3>
+            </div>
+        </md-toolbar>
         <md-card>
             <md-card-content>
-                <span class="md-headline">Schedule</span>
                 <section>
-                    <p class="md-title">Interval</p>
                     <div id="sliderContainer" ng-controller="sliderContainer" ng-cloak>
-                        <span class="md-subhead">{{value}} minutes</span>
-                        <md-slider flex md-discrete ng-model="value" step="15" min="0" max="60" aria-label="default"
-                            ng-change="OnChange()">
-                        </md-slider>
+                        <md-toolbar class="md-theme-light">
+                            <h3 class="md-toolbar-tools">
+                                <span>Interval {{value}} minutes</span>
+                            </h3>
+                        </md-toolbar>
+                        <div style="margin-top: 20px;">
+                            <md-slider flex md-discrete ng-model="value" step="15" min="0" max="60" aria-label="default"
+                                ng-change="OnChange()">
+                            </md-slider>
+                        </div>
+
                     </div>
                 </section>
                 <section>
-                    <p class="md-title">Days</p>
+                    <md-divider></md-divider>
+                    <md-toolbar class="md-theme-light">
+                        <h3 class="md-toolbar-tools">
+                            <span>Schedule Days</span>
+                        </h3>
+                    </md-toolbar>
                     <div ng-controller="DaysSwitchCtrl" ng-cloak style="display: flex;">
                         <div>
                             <md-switch ng-model="data.cb1" aria-label="Sunday" ng-change="onChange(data.cb1,1)">
@@ -41,17 +58,17 @@
                             <md-switch ng-model="data.cb3" aria-label="Tuesday" ng-change="onChange(data.cb3,3)">
                                 <span class="md-body-2">Tuesday</span>
                             </md-switch>
-                            
+
                             <md-switch ng-model="data.cb5" aria-label="Thursday" ng-change="onChange(data.cb5,5)">
                                 <span class="md-body-2">Thursday</span>
                             </md-switch>
                             <md-switch ng-model="data.cb6" aria-label="Friday" ng-change="onChange(data.cb6,6)">
                                 <span class="md-body-2">Friday</span>
                             </md-switch>
-                            
+
                         </div>
 
-                    </div> 
+                    </div>
                 </section>
             </md-card-content>
         </md-card>
