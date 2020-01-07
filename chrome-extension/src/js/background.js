@@ -84,8 +84,9 @@ function startAlert() {
     }
     intervalId = window.setInterval(() => {
         if (alertTriggered == false) {
-            var d = new Date(); //For Debugging
-            console.log('triggering alert ' + d.toTimeString()); //For Debugging
+            var today = new Date(); //For Debugging
+            var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate(); //For Debugging
+            console.log('triggering alert '+date +" " + today.toTimeString()); //For Debugging
             triggerAlert();
             alertTriggered = true;
         }
