@@ -4,9 +4,8 @@ let alertTriggered = false;
 let intervalId;
 let alertScheduleDays=[];
 
-getSavedInterval();
-loadSavedSchedule();
-startAlert();
+Promise.all([getSavedInterval(), loadSavedSchedule()])
+.then(()=>startAlert());
 
 //chrome message listener
 chrome.runtime.onMessage.addListener(
@@ -42,21 +41,28 @@ function resetAlertTrigger(){
 
 //Get the interval time if it is already saved in chrome storage sync
 function getSavedInterval() {
-    chrome.storage.sync.get(['hydration_reminder_alarm'], function (result) {
-        //console.log('Saved water Reminder Interval ' + result.hydration_reminder_alarm); //For Debugging
-        if (result.hydration_reminder_alarm == undefined) {
-            alertInvervalTime = 0;
-            return;
-        }
-        alertInvervalTime = result.hydration_reminder_alarm;
-    });
+    return new Promise((resolve, reject)=>{
+        chrome.storage.sync.get(['hydration_reminder_alarm'], function (result) {
+            console.log('Saved water Reminder Interval ' + result.hydration_reminder_alarm); //For Debugging
+            if (result.hydration_reminder_alarm == undefined) {
+                alertInvervalTime = 0;
+                return;
+            }
+            alertInvervalTime = result.hydration_reminder_alarm;
+            resolve();
+        })
+    }
+    );
 }
 
 //load the saved Schedule from chrome storage sync
 function loadSavedSchedule(){
-    chrome.storage.sync.get(['hydration_schedule'], function (result) {
-        //console.log('Saved water Reminder Interval ' + result.hydration_reminder_alarm); //For Debugging
-        alertScheduleDays = result.hydration_schedule;
+    return new Promise((resolve, reject)=>{
+        chrome.storage.sync.get(['hydration_schedule'], function (result) {
+            console.log('Saved water Reminder Schedule: ' + result.hydration_schedule); //For Debugging
+            alertScheduleDays = result.hydration_schedule;
+            resolve();
+        })
     });
 }
 
@@ -76,13 +82,14 @@ function clearAlertInterval() {
 
 //Start a timer to trigger notification to drink water for that time
 function startAlert() {
-        
+    console.log('Inside start alert alertInterval: '+ alertInvervalTime + " alertTriggered: "+alertTriggered +" alertSchedule: "+alertScheduleDays); //For Debugging   
     if (alertInvervalTime == 0 || alertInvervalTime == undefined || !isScheduledDay() ) {
         //console.log("Reminder is not running"); //For Debugging
         clearAlertInterval();
         return;
     }
-    intervalId = window.setInterval(() => {
+    console.log('Setting the alert'); //For Debugging;
+     intervalId = window.setInterval(() => {
         if (alertTriggered == false) {
             var today = new Date(); //For Debugging
             var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate(); //For Debugging
@@ -91,6 +98,7 @@ function startAlert() {
             alertTriggered = true;
         }
     }, alertInvervalTime);
+    console.log('Alert Trigger Set, intervalId: '+intervalId); //For Debugging
 };
 
 //Check if the day is scheduled
