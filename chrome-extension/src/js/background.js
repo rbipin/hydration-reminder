@@ -43,7 +43,7 @@ function resetAlertTrigger(){
 function getSavedInterval() {
     return new Promise((resolve, reject)=>{
         chrome.storage.sync.get(['hydration_reminder_alarm'], function (result) {
-            console.log('Saved water Reminder Interval ' + result.hydration_reminder_alarm); //For Debugging
+            //console.log('Saved water Reminder Interval ' + result.hydration_reminder_alarm); //For Debugging
             if (result.hydration_reminder_alarm == undefined) {
                 alertInvervalTime = 0;
                 return;
@@ -59,7 +59,7 @@ function getSavedInterval() {
 function loadSavedSchedule(){
     return new Promise((resolve, reject)=>{
         chrome.storage.sync.get(['hydration_schedule'], function (result) {
-            console.log('Saved water Reminder Schedule: ' + result.hydration_schedule); //For Debugging
+            //console.log('Saved water Reminder Schedule: ' + result.hydration_schedule); //For Debugging
             alertScheduleDays = result.hydration_schedule;
             resolve();
         })
@@ -82,23 +82,23 @@ function clearAlertInterval() {
 
 //Start a timer to trigger notification to drink water for that time
 function startAlert() {
-    console.log('Inside start alert alertInterval: '+ alertInvervalTime + " alertTriggered: "+alertTriggered +" alertSchedule: "+alertScheduleDays); //For Debugging   
+    //console.log('Inside start alert alertInterval: '+ alertInvervalTime + " alertTriggered: "+alertTriggered +" alertSchedule: "+alertScheduleDays); //For Debugging   
     if (alertInvervalTime == 0 || alertInvervalTime == undefined || !isScheduledDay() ) {
         //console.log("Reminder is not running"); //For Debugging
         clearAlertInterval();
         return;
     }
-    console.log('Setting the alert'); //For Debugging;
+    //console.log('Setting the alert'); //For Debugging;
      intervalId = window.setInterval(() => {
         if (alertTriggered == false) {
             var today = new Date(); //For Debugging
             var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate(); //For Debugging
-            console.log('triggering alert '+date +" " + today.toTimeString()); //For Debugging
+            //console.log('triggering alert '+date +" " + today.toTimeString()); //For Debugging
             triggerAlert();
             alertTriggered = true;
         }
     }, alertInvervalTime);
-    console.log('Alert Trigger Set, intervalId: '+intervalId); //For Debugging
+    //console.log('Alert Trigger Set, intervalId: '+intervalId); //For Debugging
 };
 
 //Check if the day is scheduled
