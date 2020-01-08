@@ -4,7 +4,7 @@ getSavedValue();
 //Get the value from persistance storage
 function getSavedValue(keyname) {
     chrome.storage.sync.get(['hydration_schedule'], function (result) {
-        console.log('Saved Schedule ' + result.hydration_schedule); //For Debugging
+        //console.log('Saved Schedule ' + result.hydration_schedule); //For Debugging
         scheduledDays = result.hydration_schedule;
     });
 }
@@ -114,7 +114,7 @@ function updateSchedule(state, day) {
     chrome.storage.sync.set({
         'hydration_schedule': scheduledDays
     }, function () {
-        console.log('Schedule set to ' + scheduledDays); //For Debugging
+        //console.log('Schedule set to ' + scheduledDays); //For Debugging
     });
     //Send the change
     chrome.runtime.sendMessage({
