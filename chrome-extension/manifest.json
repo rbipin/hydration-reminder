@@ -1,7 +1,7 @@
 {
   "name": "Hydration Reminder",
   "version": "2.0",
-  "version_name":"2.0.0rc",
+  "version_name":"2.0.0",
   "description": "Remind you to drink water, you can configure at a 15 minute interval to be reminded. This sends a chrome notification",
   "author": "Bipin Radhakrishnan",
   "manifest_version": 2,
