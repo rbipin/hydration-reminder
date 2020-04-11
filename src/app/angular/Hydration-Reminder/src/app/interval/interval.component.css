@@ -1,0 +1,10 @@
+.header{
+    margin: 5px;
+}
+
+.interval_value{
+display: inline-block;
+color: #ea9c15;  
+font-weight: 100;
+font-size: 7em;
+}
