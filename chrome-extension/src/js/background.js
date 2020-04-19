@@ -121,7 +121,6 @@ function triggerAlert() {
         title: "Hydration Reminder",
         message: "Hydrate Now!!",
         iconUrl: "assets/icons/bottle-32.png"
-
     };
     chrome.notifications.create(notificationOptions);
 };
