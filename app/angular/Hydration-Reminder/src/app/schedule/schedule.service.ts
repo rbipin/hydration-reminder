@@ -1,48 +1,88 @@
+/// <reference types="chrome"/>
 import { Injectable } from '@angular/core';
-import { StorageService } from '../shared/storage.service';
+import { RequestType } from '../shared/enums';
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root',
 })
-export class ScheduleService{
-    private scheduleDays: number[] = [];
-    private observers: any = [];
-    // get schedule(): number[]{
-    //     return this._schedule;
-    // }
+export class ScheduleService {
+  private scheduleDays: number[] = [];
+  private reloadData = true;
+  constructor() {}
 
-    // set schedule(value: number[]){
-    //     this._schedule = value;
-    //     this.notify();
-    // }
+  sendScheduleChangeMessage(day: number, isAdd: boolean) {
+    chrome.runtime.sendMessage({
+      command: RequestType.ScheduleChange,
+      scheduledDay: day,
+      isOn: isAdd,
+    });
+  }
 
-    getSchedule(): number[]{
-        return this.scheduleDays;
+  async getSchedule(): Promise<number[]> {
+    if (this.reloadData) {
+      this.reloadData = false;
+      this.scheduleDays = await this.getStoredSchedule();
+      return this.scheduleDays;
+    } else {
+      return this.scheduleDays;
     }
-    addSchedule(day: number): void {
-        if (!this.scheduleDays.includes(day)) {
-            this.scheduleDays.push(day);
-            this.notify(day, true);
+  }
+  addSchedule(day: number): void {
+    const dayVal = Number(day);
+    if (!this.scheduleDays.includes(dayVal)) {
+      this.scheduleDays.push(dayVal);
+      (async () => {
+        await this.storeSchedule(this.scheduleDays);
+        this.sendScheduleChangeMessage(dayVal, true);
+      })();
+    }
+  }
+  removeSchedule(day: number): void {
+    const dayVal = Number(day);
+    const index = this.scheduleDays.indexOf(dayVal);
+    if (index > -1) {
+      this.scheduleDays.splice(index, 1);
+      (async () => {
+        this.storeSchedule(this.scheduleDays);
+        this.sendScheduleChangeMessage(dayVal, false);
+      })();
+    }
+  }
+  storeSchedule(newSchedule: number[]): Promise<void> {
+    return new Promise((resolve, reject) => {
+      chrome.storage.sync.set(
+        {
+          hydration_alert_schedule: newSchedule,
+        },
+        () => {
+          const err = chrome.runtime.lastError;
+          if (err == null) {
+            resolve();
+          } else {
+            reject(err);
+          }
+          console.log('Schedule set to ' + this.scheduleDays); // For Debugging
         }
-    }
-
-    removeSchedule(day: number): void {
-        const index = this.scheduleDays.indexOf(day);
-        if (index > -1){
-            this.scheduleDays.splice(index, 1);
-            this.notify(day, false);
+      );
+    });
+  }
+  getStoredSchedule(): Promise<number[]> {
+    return new Promise((resolve, reject) => {
+      chrome.storage.sync.get('hydration_alert_schedule', (result) => {
+        const err = chrome.runtime.lastError;
+        let schedules: number[] = [];
+        if (err == null) {
+          if (result.hydration_alert_schedule == null) {
+            schedules = [];
+          } else {
+            schedules = result.hydration_alert_schedule;
+            console.log(`Schedule Service: ${this.scheduleDays}`);
+          }
+          resolve(schedules);
+        } else {
+          reject(err);
         }
-    }
-
-    constructor(private storageService: StorageService){
-    }
-
-    subscribe(observer: any): void{
-        this.observers.push(observer);
-    }
-    notify(value: number, isOn: boolean): void{
-        if (this.observers.length >= 1){
-            this.observers.forEach(obs => obs(value, isOn));
-        }
-    }
+      });
+    });
+  }
 }

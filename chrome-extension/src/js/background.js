@@ -97,7 +97,7 @@ function startAlert() {
             triggerAlert();
             alertTriggered = true;
         }
-    }, alertInvervalTime);
+    }, this.interval);
     //console.log('Alert Trigger Set, intervalId: '+intervalId); //For Debugging
 };
 

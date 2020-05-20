@@ -2,27 +2,29 @@ import { Component, OnInit } from '@angular/core';
 import { IntervalService } from '../interval/interval.service';
 
 @Component({
-    selector: 'app-interval',
-    templateUrl: './interval.component.html',
-    styleUrls: ['./interval.component.css']
+  selector: 'app-interval',
+  templateUrl: './interval.component.html',
+  styleUrls: ['./interval.component.css'],
 })
+export class IntervalComponent implements OnInit {
+  interval = 0;
 
-export class IntervalComponent implements OnInit{
-    interval = 0;
-
-    constructor(private intervalService: IntervalService){
+  constructor(private intervalService: IntervalService) {}
+  ngOnInit(): void {
+    this.intervalService
+      .getInterval()
+      .then((interval) => (this.interval = interval))
+      .catch((err) => console.log(err));
+  }
+  updateInterval(event) {
+    const intervalVal = this.fromMmToMs(event.value);
+    this.interval = intervalVal;
+    this.intervalService.setInterval(intervalVal);
+  }
+  fromMmToMs(intervalInMinutes): number {
+    if (intervalInMinutes === 0 || intervalInMinutes == null) {
+      return 0;
     }
-
-    ngOnInit(): void {
-        this.intervalService.subscribe(this.next);
-        this.interval = this.intervalService.interval;
-    }
-
-    next = (intervalValue) => {
-        this.interval = intervalValue;
-    }
-
-    updateInterval(event){
-        this.intervalService.interval = event.value;
-    }
-};
+    return intervalInMinutes * 60 * 1000;
+  }
+}

@@ -1,31 +1,79 @@
+/// <reference types="chrome"/>
 import { Injectable } from '@angular/core';
-import { IInterval } from './interval';
-import { StorageService } from '../shared/storage.service';
+import { RequestType } from '../shared/enums';
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root',
 })
-export class IntervalService{
-    private _interval: number =0;
-    private observers: any = [];
-    get interval(): number{
-        return this._interval;
-    }
+export class IntervalService {
+  private _interval = 0;
+  private reloadData = true;
+  constructor() {}
 
-    set interval(value: number){
-        this._interval = value;
-        this.notify(value);
+  async getInterval(): Promise<number> {
+    if (this.reloadData) {
+      this.reloadData = false;
+      const intervalValue = await this.getStoredInterval();
+      this._interval = intervalValue;
+      return intervalValue;
+    } else {
+      return this._interval;
     }
+  }
 
-    constructor(private storageService: StorageService){
-    }
+  setInterval(value: number) {
+    this._interval = value;
+    (async () => {
+      await this.storeInterval(this._interval);
+      this.sendIntervalChangeMessage();
+    })();
+  }
 
-    subscribe(observer: any): void{
-        this.observers.push(observer);
-    }
-    notify(value: number): void{
-        if (this.observers.length >= 1){
-            this.observers.forEach(obs => obs(value));
+  private sendIntervalChangeMessage(): void {
+    chrome.runtime.sendMessage({
+      command: RequestType.IntervalChange,
+      interval: this._interval,
+    });
+  }
+
+  storeInterval(newIntervalValue): Promise<void> {
+    return new Promise((resolve, reject) => {
+      chrome.storage.sync.set(
+        { hydration_alert_interval: newIntervalValue },
+        () => {
+          const lastErr = chrome.runtime.lastError;
+          if (lastErr == null) {
+            resolve();
+          } else {
+            reject(lastErr);
+          }
+          // console.log('Reminder Interval set to ' + newInterval); //For Debugging
         }
+      );
+    });
+  }
+  getStoredInterval(): Promise<number> {
+    return new Promise((resolve, reject) => {
+      chrome.storage.sync.get('hydration_alert_interval', (result) => {
+        const err = chrome.runtime.lastError;
+        let intervalValue: number = 0;
+        if (err == null) {
+          if (result.hydration_alert_interval == null) {
+            intervalValue = 0;
+          } else {
+            intervalValue = result.hydration_alert_interval;
+          }
+          resolve(intervalValue);
+        } else {
+          reject(err);
+        }
+      });
+    });
+  }
+  fromMsToMm(intervalInMs): number {
+    if (intervalInMs === 0 || intervalInMs == null) {
+      return 0;
     }
+    return intervalInMs / 1000 / 60;
+  }
 }

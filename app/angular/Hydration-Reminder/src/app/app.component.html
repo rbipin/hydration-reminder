@@ -1,28 +1,3 @@
-<div style="width: 400px; height: 490px; overflow-y: hidden">
-  <mat-toolbar color="primary">
-    <h3>
-      <span>{{title}}</span>
-    </h3>
-    <span class="fill-remaining-space"></span>
-    <img src="../assets/bottle-svg.svg" alt="bottle" class="logo" />
-  </mat-toolbar>
-  <div>
-    <mat-card class.mat-elevation-z2="true">
-      <mat-tab-group>
-        <mat-tab>
-          <ng-template mat-tab-label>
-            <mat-icon aria-hidden="false" aria-label="Interval">alarm</mat-icon>
-          </ng-template>
-          <app-interval></app-interval>
-        </mat-tab>
-        <mat-tab >
-          <ng-template mat-tab-label>
-            <mat-icon aria-hidden="false" aria-label="Schedule">calendar_today</mat-icon>
-          </ng-template>
-          <app-schedule></app-schedule>
-        </mat-tab>
-      </mat-tab-group>
-    </mat-card>
-  </div>
-  
+<div style="width: 400px; height: 365px; overflow-y: hidden">
+  <router-outlet></router-outlet>
 </div>
