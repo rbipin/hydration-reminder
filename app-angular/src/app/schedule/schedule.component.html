@@ -1,0 +1,14 @@
+<div>
+    <h3 class='header'>Select Schedule</h3>
+    <p>
+        <mat-button-toggle-group name="days" #toggleGroup="matButtonToggleGroup" multiple>
+          <mat-button-toggle value=1 [checked]='checkedDays[0]' (change)='updateSchedule($event)'>Sun</mat-button-toggle>
+          <mat-button-toggle value=2 [checked]='checkedDays[1]' (change)='updateSchedule($event)'>Mon</mat-button-toggle>
+          <mat-button-toggle value=3 [checked]='checkedDays[2]' (change)='updateSchedule($event)'>Tue</mat-button-toggle>
+          <mat-button-toggle value=4 [checked]='checkedDays[3]'(change)='updateSchedule($event)'>Wed</mat-button-toggle>
+          <mat-button-toggle value=5 [checked]='checkedDays[4]' (change)='updateSchedule($event)'>Thur</mat-button-toggle>
+          <mat-button-toggle value=6 [checked]='checkedDays[5]' (change)='updateSchedule($event)'>Fri</mat-button-toggle>
+          <mat-button-toggle value=7 [checked]='checkedDays[6]' (change)='updateSchedule($event)'>Sat</mat-button-toggle>
+        </mat-button-toggle-group>
+      </p>
+</div>

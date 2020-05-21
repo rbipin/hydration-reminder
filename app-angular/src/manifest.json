@@ -1,0 +1,31 @@
+{
+  "name": "Hydration Reminder",
+  "version": "3.0",
+  "version_name":"3.0.0",
+  "description": "Remind you to drink water, you can configure at a 15 minute interval to be reminded. This sends a chrome notification",
+  "author": "Bipin Radhakrishnan",
+  "manifest_version": 2,
+  "permissions":[
+    "storage",
+    "notifications"
+  ],
+  "icons": {
+    "16": "assets/water-16.png",
+    "32": "assets/water-32.png",
+    "128": "assets/water-100.png"
+  },
+  "browser_action": {
+    "default_icon": {
+      "16": "assets/water-16.png",
+      "32": "assets/water-32.png",
+      "128": "assets/water-100.png"
+    },
+    "default_popup":"index.html#/popup",
+    "default_title": "Hydration Reminder"
+  },
+  "background": {
+    "page": "index.html#/background",
+    "persistent": true
+  },
+  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
+}

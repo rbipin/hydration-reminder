@@ -1,0 +1,10 @@
+.logo{
+    height: 32px;
+    width: 32px;
+ }
+ .fill-remaining-space{
+      flex: 1 1 auto;
+ }
+ .card-background {
+    background-color: #1E384C;
+  }

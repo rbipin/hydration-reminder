@@ -1,0 +1,20 @@
+<div>
+  <h3 class='header'>Set Interval</h3>
+  <mat-grid-list cols="2">
+    <mat-grid-tile colspan=1>
+      <div>
+        <div class="interval_value">
+          {{interval | fromMsToMm}}
+        </div>
+        <span>minutes</span>
+      </div>
+    </mat-grid-tile>
+    <mat-grid-tile colspan=1>
+      <div>
+        <mat-slider class="interval-slider" vertical invert thumbLabel tickInterval="1" min="0" max="60" step="15"
+          (change)='updateInterval($event)' value="{{interval | fromMsToMm}}">
+        </mat-slider>
+      </div>
+    </mat-grid-tile>
+  </mat-grid-list>
+</div>
