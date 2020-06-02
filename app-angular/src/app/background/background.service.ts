@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { IntervalService } from '../interval/interval.service';
-import { ScheduleService } from '../schedule/schedule.service';
+import { IntervalService } from '../shared/services/interval.service';
+import { ScheduleService } from '../shared/services/schedule.service';
 
 @Injectable({
   providedIn: 'root',

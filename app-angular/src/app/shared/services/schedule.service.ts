@@ -1,6 +1,6 @@
 /// <reference types="chrome"/>
 import { Injectable } from '@angular/core';
-import { RequestType } from '../shared/enums';
+import { RequestType } from '../enums';
 
 @Injectable({
   providedIn: 'root',

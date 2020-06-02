@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ScheduleService } from './schedule.service';
+import { ScheduleService } from '../shared/services/schedule.service';
 
 @Component({
   selector: 'app-schedule',
