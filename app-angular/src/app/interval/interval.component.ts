@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { IntervalService } from '../interval/interval.service';
+import { IntervalService } from '../shared/services/interval.service';
 
 @Component({
   selector: 'app-interval',
